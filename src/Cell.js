@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 
 class Cell extends Component {
-  checkCell = event => {
-    console.log('Clicked')
+  leftClickCell = event => {
+    console.log(`Clicked at [${this.props.row}, ${this.props.column}]`)
     //We can't call the API right here because this isn't where the state lives, and the API changes the state.
+    // this.props.checkCell(this.props.row, this.props.column)
   }
 
   render() {

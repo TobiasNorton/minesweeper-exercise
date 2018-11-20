@@ -14,7 +14,7 @@ class App extends Component {
       game: {
         id: 1,
         board: [
-          ['1', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+          [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
           [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
           [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
           [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -38,6 +38,20 @@ class App extends Component {
         game: response.data
       })
     })
+  }
+
+  checkCell = (selectedRow, selectedColumn) => {
+    axios
+      .post(`https://minesweeper-api.herokuapp.com/games/${this.state.game.id}/check`, {
+        id: this.state.game.id,
+        row: selectedRow,
+        col: selectedColumn
+      })
+      .then(response => {
+        this.setState({
+          game: response.data
+        })
+      })
   }
 
   headerText = () => {
