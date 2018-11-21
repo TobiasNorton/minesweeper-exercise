@@ -11,6 +11,7 @@ class App extends Component {
 
     this.state = {
       playing: false,
+      difficulty: 0,
       game: {
         id: 1,
         board: [
@@ -31,13 +32,17 @@ class App extends Component {
 
   newGame = event => {
     console.log('New game has begun')
-    axios.post('https://minesweeper-api.herokuapp.com/games/').then(response => {
-      console.log(response.data)
-      this.setState({
-        playing: true,
-        game: response.data
+    console.log(this.state.difficulty)
+
+    axios
+      .post('https://minesweeper-api.herokuapp.com/games/', { difficulty: this.state.difficulty })
+      .then(response => {
+        console.log(response.data)
+        this.setState({
+          playing: true,
+          game: response.data
+        })
       })
-    })
   }
 
   checkCell = (selectedRow, selectedColumn) => {
@@ -69,14 +74,16 @@ class App extends Component {
   }
 
   headerText = () => {
-    if (!this.state.playing) {
+    if (this.state.playing) {
       if (this.state.game.state === 'won') {
         return 'You won!'
+      } else if (this.state.game.state === 'lost') {
+        return 'Game Over!'
+      } else {
+        return `Game #${this.state.game.id}`
       }
-
-      if (this.state.game.state === 'lost') return 'Game Over!'
     } else {
-      return `Game #${this.state.game.id}`
+      return 'Start a New Game!'
     }
   }
 
@@ -96,6 +103,15 @@ class App extends Component {
     }
   }
 
+  chooseDifficulty = event => {
+    this.setState({
+      difficulty: parseInt(event.target.value)
+      // This event targets the element on which the event
+      // originally occurred, and then we return it's value
+      // but as an integer
+    })
+  }
+
   render() {
     return (
       <div className="App">
@@ -103,7 +119,7 @@ class App extends Component {
           <tbody>
             <tr>
               <td className="header" colSpan="8">
-                <select>
+                <select onChange={this.chooseDifficulty} value={this.state.difficulty}>
                   <option value="0">Easy</option>
                   <option value="1">Intermediate</option>
                   <option value="2">Expert</option>
@@ -117,62 +133,17 @@ class App extends Component {
               </td>
             </tr>
             <tr>
-              <Cell
-                checkCell={this.checkCell}
-                flagCell={this.flagCell}
-                row={0}
-                column={0}
-                value={this.state.game.board[0][0]}
-              />
-              <Cell
-                checkCell={this.checkCell}
-                flagCell={this.flagCell}
-                row={0}
-                column={1}
-                value={this.state.game.board[0][1]}
-              />
-              <Cell
-                checkCell={this.checkCell}
-                flagCell={this.flagCell}
-                row={0}
-                column={2}
-                value={this.state.game.board[0][2]}
-              />
-              <Cell
-                checkCell={this.checkCell}
-                flagCell={this.flagCell}
-                row={0}
-                column={3}
-                value={this.state.game.board[0][3]}
-              />
-              <Cell
-                checkCell={this.checkCell}
-                flagCell={this.flagCell}
-                row={0}
-                column={4}
-                value={this.state.game.board[0][4]}
-              />
-              <Cell
-                checkCell={this.checkCell}
-                flagCell={this.flagCell}
-                row={0}
-                column={5}
-                value={this.state.game.board[0][5]}
-              />
-              <Cell
-                checkCell={this.checkCell}
-                flagCell={this.flagCell}
-                row={0}
-                column={6}
-                value={this.state.game.board[0][6]}
-              />
-              <Cell
-                checkCell={this.checkCell}
-                flagCell={this.flagCell}
-                row={0}
-                column={7}
-                value={this.state.game.board[0][7]}
-              />
+              {this.state.game.board[0].map((valueOfTheRowItem, rowIndex) => {
+                return (
+                  <Cell
+                    checkCell={this.checkCell}
+                    flagCell={this.flagCell}
+                    row={0}
+                    column={rowIndex}
+                    value={valueOfTheRowItem}
+                  />
+                )
+              })}
             </tr>
             <tr>
               <Cell
