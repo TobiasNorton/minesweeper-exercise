@@ -7,11 +7,11 @@ class Cell extends Component {
     this.props.checkCell(this.props.row, this.props.column)
   }
 
-  // rightClickCell = event => {
-  //   console.log(`Flagged at [${this.props.row}, ${this.props.column}]`)
-  //   this.props.flagCell(this.props.row, this.props.column)
-  //   event.preventDefault()
-  // }
+  rightClickCell = event => {
+    event.preventDefault()
+    console.log(`Flagged at [${this.props.row}, ${this.props.column}]`)
+    this.props.flagCell(this.props.row, this.props.column)
+  }
 
   render() {
     return (
