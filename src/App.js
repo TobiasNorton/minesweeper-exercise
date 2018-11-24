@@ -46,6 +46,9 @@ class App extends Component {
   }
 
   checkCell = (selectedRow, selectedColumn) => {
+    if (!this.state.playing) {
+      return
+    }
     axios
       .post(`https://minesweeper-api.herokuapp.com/games/${this.state.game.id}/check/`, {
         id: this.state.game.id,
@@ -60,6 +63,9 @@ class App extends Component {
   }
 
   flagCell = (selectedRow, selectedColumn) => {
+    if (!this.state.playing) {
+      return
+    }
     axios
       .post(`https://minesweeper-api.herokuapp.com/games/${this.state.game.id}/flag`, {
         id: this.state.game.id,
@@ -112,13 +118,37 @@ class App extends Component {
     })
   }
 
+  boardRows = () => {
+    return this.state.game.board.map((row, rowIndexx) => {
+      return (
+        <tr key={rowIndexx}>
+          {row.map((valueOfTheRowItem, rowIndex) => {
+            return (
+              <Cell
+                checkCell={this.checkCell}
+                flagCell={this.flagCell}
+                row={rowIndexx}
+                column={rowIndex}
+                value={valueOfTheRowItem}
+              />
+            )
+          })}
+        </tr>
+      )
+    })
+  }
+
+  boardSize = () => {
+    return this.state.game.board[0].length
+  }
+
   render() {
     return (
       <div className="App">
         <table>
           <tbody>
             <tr>
-              <td className="header" colSpan="8">
+              <td className="header" colSpan={this.boardSize()}>
                 <select onChange={this.chooseDifficulty} value={this.state.difficulty}>
                   <option value="0">Easy</option>
                   <option value="1">Intermediate</option>
@@ -128,24 +158,13 @@ class App extends Component {
               </td>
             </tr>
             <tr>
-              <td className="header not-playing" colSpan="8">
+              <td className="header not-playing" colSpan={this.boardSize()}>
                 {this.headerText()}
               </td>
             </tr>
-            <tr>
-              {this.state.game.board[0].map((valueOfTheRowItem, rowIndex) => {
-                return (
-                  <Cell
-                    checkCell={this.checkCell}
-                    flagCell={this.flagCell}
-                    row={0}
-                    column={rowIndex}
-                    value={valueOfTheRowItem}
-                  />
-                )
-              })}
-            </tr>
-            <tr>
+            {this.boardRows()}
+
+            {/* <tr>
               <Cell
                 checkCell={this.checkCell}
                 flagCell={this.flagCell}
@@ -550,9 +569,9 @@ class App extends Component {
                 column={7}
                 value={this.state.game.board[7][7]}
               />
-            </tr>
+            </tr> */}
             <tr>
-              <td className="header" colSpan="8">
+              <td className="header" colSpan={this.boardSize()}>
                 {this.minesText()}
               </td>
             </tr>
